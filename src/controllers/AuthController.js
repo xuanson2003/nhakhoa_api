@@ -19,7 +19,7 @@ class AuthController {
 
             // Câu lệnh SQL kiểm tra người dùng
             const userQuery = `
-                SELECT id, email, first_name, last_name, password, salt, image
+                SELECT id, email, first_name, last_name, password, salt, image, is_active
                 FROM sm_user
                 WHERE email = :email
                 LIMIT 1;
@@ -36,6 +36,10 @@ class AuthController {
             }
 
             const user = users[0];
+
+            if (!user.is_active) {
+                return res.json({ success: false, errorField: 'is_active' });
+            }
 
             // So sánh mật khẩu đã mã hóa
             const passCompare = bcrypt.compareSync(password, user.password);
